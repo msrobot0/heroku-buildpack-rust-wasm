@@ -15,7 +15,7 @@ if [ -e "$ENV_DIR/DATABASE_URL" ]; then
 fi
 
 # Gotta use nightly for wasm right now
-VERSION=nightly
+VERSION=beta
 
 # Standard paranoia.
 set -eu
@@ -46,9 +46,12 @@ cd "$CACHE_DIR"
 if [ -d "$CARGO_HOME" ]; then
     echo "-----> Checking for new releases of Rust $VERSION channel"
     # It's possible that $VERSION has changed, or the `stable` channel has updated.
+
     rustup self update
+    
     rustup update "$VERSION"
     rustup default "$VERSION"
+    rustup install beta
 else
     echo "-----> Downloading rustup"
     curl https://sh.rustup.rs -sSf > rustup.sh
@@ -56,12 +59,6 @@ else
 
     echo "-----> Using rustup to install Rust channel $VERSION"
     ./rustup.sh -y --default-toolchain "$VERSION"
-
-    echo "-----> Installing wasm target"
-    rustup target add wasm32-unknown-unknown
-
-    echo "-----> Installing wasm-gc"
-    cargo install --git https://github.com/alexcrichton/wasm-gc
 
     rm rustup.sh
 fi
@@ -93,7 +90,7 @@ rm -rf target/
 
 #wasm-gc "$CARGO_TARGET_DIR/wasm32-unknown-unknown/release/semver_wasm.wasm" "$CARGO_TARGET_DIR/wasm32-unknown-unknown/release/semver_wasm.wasm"
 
-cargo build --release
+cargo build
 wasm-pack build
 echo $CARGO_TARGET_DIR
 #mv "$CARGO_TARGET_DIR/wasm32-unknown-unknown/release/semver_wasm.wasm" public/semver.wasm
