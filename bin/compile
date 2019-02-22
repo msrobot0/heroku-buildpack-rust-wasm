@@ -94,6 +94,7 @@ rm -rf target/
 #wasm-gc "$CARGO_TARGET_DIR/wasm32-unknown-unknown/release/semver_wasm.wasm" "$CARGO_TARGET_DIR/wasm32-unknown-unknown/release/semver_wasm.wasm"
 
 cargo build --release
+wasm-pack build
 echo $CARGO_TARGET_DIR
 #mv "$CARGO_TARGET_DIR/wasm32-unknown-unknown/release/semver_wasm.wasm" public/semver.wasm
 
